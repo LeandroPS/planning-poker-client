@@ -1,7 +1,12 @@
-import Home from "./pages/Home";
+import Join from "./pages/Join";
+import PlanningProvider from "./context/planning";
 
 function App() {
-  return <Home />;
+  return (
+    <PlanningProvider>
+      <Join />
+    </PlanningProvider>
+  );
 }
 
 export default App;
