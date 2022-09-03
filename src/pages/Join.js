@@ -1,7 +1,9 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { usePlanning } from "../context/planning";
 
 const Join = () => {
+  const navigate = useNavigate();
   const [name, setName] = useState();
   const { join } = usePlanning();
 
@@ -12,6 +14,7 @@ const Join = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
     join({ name });
+    navigate("/vote");
   };
 
   return (
