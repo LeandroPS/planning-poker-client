@@ -27,7 +27,9 @@ const PlanningProvider = ({ children }) => {
     socket.emit(VOTE, { value });
   };
 
-  const join = ({ name }) => {
+  const join = async ({ name }) => {
+    await socket.connect();
+
     socket.emit(JOIN, { name });
   };
 

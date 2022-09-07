@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import { socket } from "../../../websocket";
 import PlanningProvider, { PlanningContext } from "./PlanningProvider";
 import {
@@ -12,6 +12,7 @@ import {
 
 jest.mock("../../../websocket", () => ({
   socket: {
+    connect: jest.fn(() => new Promise((resolve) => resolve())),
     emit: jest.fn(),
     on: jest.fn(),
   },
@@ -74,7 +75,7 @@ describe("<PlanningProvider />", () => {
     expect(roomState).toStrictEqual(newSessionState);
   });
 
-  it("should emit socket event when join method is called", () => {
+  it("should connect socket when join method is called", () => {
     const payload = { name: "jonas" };
 
     render(
@@ -87,7 +88,25 @@ describe("<PlanningProvider />", () => {
       </PlanningProvider>
     );
 
-    expect(socket.emit).toHaveBeenCalledWith(JOIN, payload);
+    expect(socket.connect).toHaveBeenCalled();
+  });
+
+  it("should emit socket event when join method is called", async () => {
+    const payload = { name: "jonas" };
+
+    render(
+      <PlanningProvider>
+        <PlanningContext.Consumer>
+          {({ join }) => {
+            join(payload);
+          }}
+        </PlanningContext.Consumer>
+      </PlanningProvider>
+    );
+
+    await waitFor(() => {
+      expect(socket.emit).toHaveBeenCalledWith(JOIN, payload);
+    });
   });
 
   it("should emit socket event when vote method is called", () => {
