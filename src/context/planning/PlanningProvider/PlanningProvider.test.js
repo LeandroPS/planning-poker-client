@@ -1,7 +1,9 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { useEffect, useContext } from "react";
+import { render, screen, waitFor, act } from "@testing-library/react";
 import { socket } from "../../../websocket";
 import PlanningProvider, { PlanningContext } from "./PlanningProvider";
 import {
+  UPDATE_STATE,
   VOTE,
   JOIN,
   LEAVE,
@@ -17,6 +19,10 @@ jest.mock("../../../websocket", () => ({
     on: jest.fn(),
   },
 }));
+
+afterAll(() => {
+  jest.clearAllMocks();
+});
 
 describe("<PlanningProvider />", () => {
   it("should render children", () => {
@@ -45,7 +51,7 @@ describe("<PlanningProvider />", () => {
     );
 
     expect(roomState).toStrictEqual({
-      votes: [],
+      votes: {},
       team: [],
       showVotes: false,
     });
@@ -53,7 +59,7 @@ describe("<PlanningProvider />", () => {
 
   it("should update session state when socket requests it", () => {
     const newSessionState = {
-      votes: [],
+      votes: {},
       team: [{ socketId: "kjpg3ud6", name: "jonas" }],
       showVotes: false,
     };
@@ -73,6 +79,65 @@ describe("<PlanningProvider />", () => {
     );
 
     expect(roomState).toStrictEqual(newSessionState);
+  });
+
+  it("should call clear votes event handler when receives an state update clearing the votes", async () => {
+    const clearVotesHandler = jest.fn();
+
+    const ClearVotesConsumerComponent = () => {
+      const { setClearVotesHandler } = useContext(PlanningContext);
+
+      useEffect(() => {
+        setClearVotesHandler(clearVotesHandler);
+      });
+
+      return null;
+    };
+
+    const sessionStateWithVotes = {
+      votes: { kjpg3ud6: "2", yhg6fd9: "3" },
+      team: [
+        { socketId: "kjpg3ud6", name: "jonas" },
+        { socketId: "yhg6fd9", name: "maria" },
+      ],
+      showVotes: false,
+    };
+
+    const sessionStateWithoutVotes = {
+      votes: {},
+      team: [
+        { socketId: "kjpg3ud6", name: "jonas" },
+        { socketId: "yhg6fd9", name: "maria" },
+      ],
+      showVotes: false,
+    };
+
+    let updateStateCallback;
+
+    const triggerUpdateState = (newState) => {
+      updateStateCallback(newState);
+    };
+
+    socket.on.mockImplementationOnce(
+      jest.fn((event, callback) => {
+        if (event === UPDATE_STATE) {
+          updateStateCallback = callback;
+        }
+      })
+    );
+
+    await render(
+      <PlanningProvider>
+        <ClearVotesConsumerComponent />
+      </PlanningProvider>
+    );
+
+    act(() => {
+      triggerUpdateState(sessionStateWithVotes);
+      triggerUpdateState(sessionStateWithoutVotes);
+    });
+
+    expect(clearVotesHandler).toHaveBeenCalled();
   });
 
   it("should connect socket when join method is called", () => {

@@ -21,4 +21,12 @@ describe("<VoteSelector />", () => {
 
     expect(handleVoteSelection).toHaveBeenCalled();
   });
+
+  it("should set event listener for clearing votes", async () => {
+    const setClearVotesHandler = jest.fn();
+
+    render(<VoteSelector setClearVotesHandler={setClearVotesHandler} />);
+
+    expect(setClearVotesHandler).toHaveBeenCalledWith(expect.any(Function));
+  });
 });

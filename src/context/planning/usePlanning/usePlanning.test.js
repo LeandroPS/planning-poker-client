@@ -1,5 +1,5 @@
 import React from "react";
-import { renderHook, act } from "@testing-library/react-hooks";
+import { renderHook, act } from "@testing-library/react";
 import {
   PlanningContext,
   initialRoomState,
@@ -14,6 +14,7 @@ const mockedContextValue = {
   join: jest.fn(),
   leave: jest.fn(),
   clearVotes: jest.fn(),
+  setClearVotesHandler: jest.fn(),
 };
 
 describe("usePlanning()", () => {
@@ -51,6 +52,27 @@ describe("usePlanning()", () => {
     });
 
     expect(mockedContextValue.join).toHaveBeenCalledWith(params);
+  });
+
+  it("should call setClearVotesHandler method on context when setClearVotesHandler method on hook is called", () => {
+    const {
+      result: { current: planning },
+    } = renderHook(() => usePlanning(), {
+      wrapper: ({ children }) => (
+        <PlanningContext.Provider value={mockedContextValue}>
+          {children}
+        </PlanningContext.Provider>
+      ),
+    });
+
+    const { setClearVotesHandler } = planning;
+    const clearVotesHandler = jest.fn();
+
+    act(() => {
+      setClearVotesHandler(clearVotesHandler);
+    });
+
+    expect(mockedContextValue.setClearVotesHandler).toHaveBeenCalled();
   });
 
   it("should call vote method on context when vote method on hook is called", () => {

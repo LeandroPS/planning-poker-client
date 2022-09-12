@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const Card = ({ value, onClick, selected }) => (
   <div onClick={onClick} style={{ border: selected ? "1px solid" : "none" }}>
@@ -6,9 +6,20 @@ const Card = ({ value, onClick, selected }) => (
   </div>
 );
 
-const VoteSelector = ({ onSelect }) => {
+const VoteSelector = ({ onSelect, setClearVotesHandler }) => {
   const options = [1, 2, 3, 5, 8, 13, 21];
   const [selectedValue, setSelectedValue] = useState();
+
+  useEffect(() => {
+    if (setClearVotesHandler) {
+      setClearVotesHandler(clearSelection);
+    }
+  }, [setClearVotesHandler]);
+
+  const clearSelection = () => {
+    console.log("cleared");
+    setSelectedValue(null);
+  };
 
   const handleSelection = (value) => {
     setSelectedValue(value);

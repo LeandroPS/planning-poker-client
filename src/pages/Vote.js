@@ -5,7 +5,8 @@ import { usePlanning } from "../context/planning";
 import { useSettings } from "../context/settings";
 
 const Vote = () => {
-  const { state, vote, revealVotes, clearVotes } = usePlanning();
+  const { state, vote, revealVotes, clearVotes, setClearVotesHandler } =
+    usePlanning();
   const { settings } = useSettings();
   const { team, votes, showVotes } = state;
 
@@ -23,7 +24,10 @@ const Vote = () => {
       <button onClick={revealVotes}>Reveal votes</button>
       <button onClick={clearVotes}>Clear votes</button>
       <h3>Votation options:</h3>
-      <VoteSelector onSelect={handleVote} />
+      <VoteSelector
+        onSelect={handleVote}
+        setClearVotesHandler={setClearVotesHandler}
+      />
     </>
   );
 };
