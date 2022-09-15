@@ -5,6 +5,7 @@ const votingServiceWebsocketBaseUrl =
 
 var socket = io(votingServiceWebsocketBaseUrl, {
   autoConnect: false,
+  reconnection: false,
 });
 
 export { socket };
