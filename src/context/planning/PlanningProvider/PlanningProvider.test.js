@@ -17,6 +17,7 @@ jest.mock("../../../websocket", () => ({
     connect: jest.fn(() => new Promise((resolve) => resolve())),
     emit: jest.fn(),
     on: jest.fn(),
+    sendBuffer: [{ event: "LEAVE" }],
   },
 }));
 
@@ -154,6 +155,22 @@ describe("<PlanningProvider />", () => {
     );
 
     expect(socket.connect).toHaveBeenCalled();
+  });
+
+  it("should empty socket sent events buffer list when join method is called", () => {
+    const payload = { name: "jonas" };
+
+    render(
+      <PlanningProvider>
+        <PlanningContext.Consumer>
+          {({ join }) => {
+            join(payload);
+          }}
+        </PlanningContext.Consumer>
+      </PlanningProvider>
+    );
+
+    expect(socket.sendBuffer).toHaveLength(0);
   });
 
   it("should emit socket event when join method is called", async () => {

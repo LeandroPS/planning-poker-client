@@ -45,9 +45,9 @@ const PlanningProvider = ({ children }) => {
     });
   });
 
-  const join = async ({ name }) => {
-    await socket.connect();
-
+  const join = ({ name }) => {
+    socket.sendBuffer = [];
+    socket.connect();
     socket.emit(JOIN, { name });
   };
 
