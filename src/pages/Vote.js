@@ -1,9 +1,11 @@
+import { useEffect } from "react";
 import TeamMemberList from "../components/TeamMemberList";
 import TeamVotes from "../components/TeamVotes";
 import VoteSelector from "../components/VoteSelector";
 import { useNavigate } from "react-router-dom";
 import { usePlanning } from "../context/planning";
 import { useSettings } from "../context/settings";
+import { socket } from "../websocket";
 
 const Vote = () => {
   const { state, vote, revealVotes, clearVotes, leave, setClearVotesHandler } =
@@ -11,6 +13,12 @@ const Vote = () => {
   const navigate = useNavigate();
   const { settings } = useSettings();
   const { team, votes, showVotes } = state;
+
+  useEffect(() => {
+    socket.on("disconnect", () => navigate("/"));
+
+    return () => socket.off("disconnect");
+  });
 
   const handleVote = (value) => {
     vote({ value });
