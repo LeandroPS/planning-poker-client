@@ -1,0 +1,13 @@
+version: "3.8"
+
+services:
+  app:
+    container_name: planning-poker-client-dev
+    image: planning-poker-client-dev
+    build:
+      context: .
+      target: development
+    volumes:
+      - ./src:/app/src
+    ports:
+      - 3001:3001

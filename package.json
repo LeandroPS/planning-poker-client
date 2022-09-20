@@ -4,6 +4,8 @@
   "private": true,
   "scripts": {
     "start": "react-scripts start",
+    "start-dev": "docker-compose -f docker-compose.dev.yml up",
+    "start-prod": "docker-compose -f docker-compose.prod.yml up",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "test:ci": "CI=true react-scripts test",

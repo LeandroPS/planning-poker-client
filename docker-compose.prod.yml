@@ -1,0 +1,10 @@
+version: "3.8"
+
+services:
+  app:
+    container_name: planning-poker-client-prod
+    image: planning-poker-client-prod
+    build:
+      target: production
+    ports:
+      - 8080:8080
