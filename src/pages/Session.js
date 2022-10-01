@@ -2,17 +2,24 @@ import { useEffect } from "react";
 import TeamMemberList from "../components/TeamMemberList";
 import TeamVotes from "../components/TeamVotes";
 import VoteSelector from "../components/VoteSelector";
-import { useNavigate } from "react-router-dom";
+import { createSearchParams, useNavigate, useParams } from "react-router-dom";
 import { usePlanning } from "../context/planning";
 import { useSettings } from "../context/settings";
 import { socket } from "../websocket";
 
 const Vote = () => {
-  const { state, vote, revealVotes, clearVotes, leave, setClearVotesHandler } =
-    usePlanning();
+  const {
+    state,
+    vote,
+    revealVotes,
+    clearVotes,
+    leave,
+    setClearVotesHandler,
+  } = usePlanning();
   const navigate = useNavigate();
   const { settings } = useSettings();
   const { team, votes, showVotes } = state;
+  const { sessionId } = useParams();
 
   useEffect(() => {
     socket.on("disconnect", () => navigate("/"));
@@ -26,7 +33,11 @@ const Vote = () => {
 
   const handleLeave = () => {
     leave();
-    navigate("/");
+    navigate("/", {
+      search: createSearchParams({
+        sessionId,
+      }),
+    });
   };
 
   return (

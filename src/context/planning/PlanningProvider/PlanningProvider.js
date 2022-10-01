@@ -45,10 +45,10 @@ const PlanningProvider = ({ children }) => {
     });
   });
 
-  const join = ({ name }) => {
+  const join = ({ name, sessionId }) => {
     socket.sendBuffer = [];
     socket.connect();
-    socket.emit(JOIN, { name });
+    socket.emit(JOIN, { name, sessionId });
   };
 
   const vote = ({ value }) => {

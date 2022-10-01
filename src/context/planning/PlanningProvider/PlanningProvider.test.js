@@ -64,9 +64,11 @@ describe("<PlanningProvider />", () => {
       team: [{ socketId: "kjpg3ud6", name: "jonas" }],
       showVotes: false,
     };
+
     socket.on.mockImplementationOnce(
       jest.fn((_, setState) => setState(newSessionState))
     );
+
     let roomState;
 
     render(
@@ -142,7 +144,7 @@ describe("<PlanningProvider />", () => {
   });
 
   it("should connect socket when join method is called", () => {
-    const payload = { name: "jonas" };
+    const payload = { name: "jonas", sessionId: "abc-def-ghi" };
 
     render(
       <PlanningProvider>
@@ -158,7 +160,7 @@ describe("<PlanningProvider />", () => {
   });
 
   it("should empty socket sent events buffer list when join method is called", () => {
-    const payload = { name: "jonas" };
+    const payload = { name: "jonas", sessionId: "abc-def-ghi" };
 
     render(
       <PlanningProvider>
@@ -174,7 +176,7 @@ describe("<PlanningProvider />", () => {
   });
 
   it("should emit socket event when join method is called", async () => {
-    const payload = { name: "jonas" };
+    const payload = { name: "jonas", sessionId: "abc-def-ghi" };
 
     render(
       <PlanningProvider>
